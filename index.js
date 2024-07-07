@@ -35,6 +35,12 @@ const locations = [
     "button functions": [buyHealth, buyWeapon, goTown],
     text: "You enter the store.",
   },
+  {
+    name: "cave",
+    "button text": ["Fight slime", "Fight fanged beast", "Go to town square"],
+    "button functions": [fightSlime, fightBeast, goTown],
+    text: "You enter the cave. You see some monsters.",
+  },
 ];
 
 // initialize buttons
@@ -61,13 +67,27 @@ function goStore() {
 }
 
 function goCave() {
-  console.log("Going to cave.");
+  update(locations[2]); //only the third location from const locations = cave
 }
 
 function fightDragon() {
   console.log("Fighting dragon.");
 }
 
-function buyHealth() {}
+function buyHealth() {
+  //actions the player takes
+  if (gold >= 10) {
+    gold -= 10; //using compound assignment -=/+=
+    health += 10;
+    goldText.innerText = gold; //the displayed text for gold is updated immediately after modifying the variables
+    healthText.innerText = health; //the displayed text for health is updated immediately after modifying the variables
+  } else {
+    text.innerText = "You do not have enough gold to buy health."; //change text
+  }
+}
 
 function buyWeapon() {}
+
+function fightSlime() {}
+
+function fightBeast() {}
