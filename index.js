@@ -17,23 +17,42 @@ const monsterStats = document.querySelector("#monsterStats");
 const monsterName = document.querySelector("#monsterName");
 const monsterHealthText = document.querySelector("#monsterHealth");
 
+// hold monsters [as objects - in an array]
+const monsters = [
+  {
+    name: "slime",
+    level: 2,
+    health: 15,
+  },
+  {
+    name: "fanged beast",
+    level: 8,
+    health: 60,
+  },
+  {
+    name: "dragon",
+    level: 20,
+    health: 300,
+  },
+];
+
 // hold weapons [as objects - in an array]
 const weapons = [
   {
     name: "stick", //The value of the currentWeaponIndex variable corresponds to an index in the weapons array. The player starts with a "stick", since currentWeaponIndex starts at 0 and weapons[0] is the "stick" weapon.
-    power: "5",
+    power: 5,
   },
   {
     name: "dagger",
-    power: "30",
+    power: 30,
   },
   {
     name: "claw hammer",
-    power: "50",
+    power: 50,
   },
   {
     name: "sword",
-    power: "100",
+    power: 100,
   },
 ];
 
@@ -90,10 +109,6 @@ function goCave() {
   update(locations[2]); //only the third location from const locations = cave
 }
 
-function fightDragon() {
-  console.log("Fighting dragon.");
-}
-
 function buyHealth() {
   //actions the player takes
   if (gold >= 10) {
@@ -141,6 +156,20 @@ function sellWeapon() {
   }
 }
 
-function fightSlime() {}
+//order of const monsters
+function fightSlime() {
+  fighting = 0; //already declared so don't need to use let
+  goFight(); // call goFight
+}
 
-function fightBeast() {}
+function fightBeast() {
+  fighting = 1;
+  goFight();
+}
+
+function fightDragon() {
+  fighting = 2;
+  goFight();
+}
+
+function goFight() {}
