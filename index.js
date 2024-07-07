@@ -80,6 +80,12 @@ const locations = [
     "button functions": [fightSlime, fightBeast, goTown],
     text: "You enter the cave. You see some monsters.",
   },
+  {
+    name: "fight",
+    "button text": ["Attack", "Dodge", "Run"],
+    "button functions": [attack, dodge, goTown],
+    text: "You are fighting a monster.",
+  },
 ];
 
 // initialize buttons
@@ -172,4 +178,19 @@ function fightDragon() {
   goFight();
 }
 
-function goFight() {}
+function goFight() {
+  // Call the update function with the fourth object in the locations array
+  update(locations[3]);
+  // Set monsterHealth to be the health of the current monster
+  monsterHealth = monsters[fighting].health;
+  //monster's stats has been hidden with CSS. When the player clicks the "Fight dragon" button, the monster's stats should be displayed.
+  const monsterStats = document.querySelector("p");
+  monsterStats.style.display = "block"; //style = access the inline style of an element, display = the visibility
+  // Update the text for the current monster's name and health
+  monsterName.innerText = monsters[fighting].name;
+  monsterHealthText.innerText = monsterHealth;
+}
+
+function attack() {}
+
+function dodge() {}
