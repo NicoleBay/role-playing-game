@@ -219,8 +219,12 @@ function attack() {
   text.innerText +=
     " You attack it with your " + weapons[currentWeaponIndex].name + "."; // weapon
   health -= getMonsterAttackValue(monsters[fighting].level); //health equal to health minus the return value of the getMonsterAttackValue function, and passes the level of the monster as an argument
-  monsterHealth -= //monsterHealth to monsterHealth minus the power of the player's current weapon
-    weapons[currentWeaponIndex].power + Math.floor(Math.random() * xp) + 1; // add a random number between 1 and the value of xp to your monsterHealth -= weapons[currentWeaponIndex].power
+  if (isMonsterHit()) {
+    monsterHealth -= //monsterHealth to monsterHealth minus the power of the player's current weapon
+      weapons[currentWeaponIndex].power + Math.floor(Math.random() * xp) + 1; // add a random number between 1 and the value of xp to your monsterHealth -= weapons[currentWeaponIndex].power
+  } else {
+    text.innerText += " You miss.";
+  }
   healthText.innerText = health; // update health status
   monsterHealthText.innerText = monsterHealth; // update monster health status
   if (health <= 0) {
@@ -234,12 +238,22 @@ function attack() {
       defeatMonster();
     }
   }
+  if (Math.random() <= 0.1 && inventory.length !== 1) {
+    //&& add a second condition to your if statement. The player's weapon should only break if inventory.length does not equal (!==) on (only weapon not to break)
+    // weapon breaks
+    text.innerText += " Your " + inventory.pop() + " breaks."; //remove the last item in the array AND return it so it appears in your string
+    currentWeaponIndex--; //Decrement the value of currentWeaponIndex by 1
+  }
 }
 
 function getMonsterAttackValue(level) {
   // The attack of the monster will be based on the monster's level and the player's xp
   const hit = level * 5 - Math.floor(Math.random() * xp); // This will set the monster's attack to five times their level minus a random number between 0 and the player's xp
   return hit > 0 ? hit : 0; // notice a bug. If your xp is high enough, the getMonsterAttackValue function will return a negative number, which will actually add to your total health when fighting a monster! Fix by using ternary operator is a conditional operator and can be used as a one-line if-else statement. The syntax is: condition ? expressionIfTrue : expressionIfFalse
+}
+
+function isMonsterHit() {
+  return Math.random() > 0.2 || health < 20; // return a boolean value (true or false) to be used in your if statement in attach function. player should hit if either Math.random() > .2 OR (||) if the player's health is less than 20
 }
 
 function dodge() {
