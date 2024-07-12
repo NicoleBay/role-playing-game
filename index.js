@@ -93,7 +93,7 @@ const locations = [
       "Go to town square",
       "Go to town square",
     ],
-    "button functions": [goTown, goTown, goTown],
+    "button functions": [goTown, goTown, easterEgg],
     text: 'The monster screams "Arg!" as it dies. You gain experience points and find gold.',
   },
   {
@@ -107,6 +107,12 @@ const locations = [
     "button text": ["REPLAY?", "REPLAY?", "REPLAY?"],
     "button functions": [restart, restart, restart],
     text: "You defeat the dragon! YOU WIN THE GAME! &#x1F389;",
+  },
+  {
+    name: "easter egg",
+    "button text": ["2", "8", "Go to town square?"],
+    "button functions": [pickTwo, pickEight, goTown],
+    text: "You find a secret game. Pick a number above. Ten numbers will be randomly chosen between 0 and 10. If the number you choose matches one of the random numbers, you win!",
   },
 ];
 
@@ -287,4 +293,44 @@ function restart() {
   healthText.innerText = healthText;
   xpText.innerText = xpText;
   goTown(); //call function
+}
+
+function easterEgg() {
+  update(locations[7]);
+}
+
+function pick(guess) {
+  const numbers = [];
+  while (numbers.length < 10);
+  {
+    // create a while loop that runs as long as numbers.length is less than 10
+    numbers.push(Math.floor(Math.random() * 11)); //push a random number between 0 and 10 to the end of the numbers array
+  }
+  text.innerText = "You picked " + guess + ". Here are the random numbers:\n"; //\n new line
+  for (let i = 0; i < 10; i++);
+  {
+    //i is initialized to 0, the loop runs as long as i is less than 10, and i is incremented by 1 after each iteration using the increment operator ++
+    text.innerText += numbers[i] + "\n";
+  }
+  if (numbers.includes(guess)) {
+    // check if the guess is in the numbers array.
+    text.innerText += "Right! You win 20 gold!";
+    gold += 20; // update golder
+    goldText.innerText = goldText; //show new gold
+  } else {
+    text.innerText += "Wrong! You lose 10 health!";
+    health -= 10;
+    healthText.innerText = healthText;
+    if (health <= 0) {
+      lose();
+    }
+  }
+}
+
+function pickTwo() {
+  pick(2);
+}
+
+function pickEight() {
+  pick(8);
 }
