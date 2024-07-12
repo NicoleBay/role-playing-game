@@ -86,6 +86,28 @@ const locations = [
     "button functions": [attack, dodge, goTown],
     text: "You are fighting a monster.",
   },
+  {
+    name: "kill monster",
+    "button text": [
+      "Go to town square",
+      "Go to town square",
+      "Go to town square",
+    ],
+    "button functions": [goTown, goTown, goTown],
+    text: 'The monster screams "Arg!" as it dies. You gain experience points and find gold.',
+  },
+  {
+    name: "lose",
+    "button text": ["REPLAY?", "REPLAY?", "REPLAY?"],
+    "button functions": [restart, restart, restart],
+    text: "You die. &#x2620;", //emoticon text. Need to use the innerHTML property on text in the update function
+  },
+  {
+    name: "win",
+    "button text": ["REPLAY?", "REPLAY?", "REPLAY?"],
+    "button functions": [restart, restart, restart],
+    text: "You defeat the dragon! YOU WIN THE GAME! &#x1F389;",
+  },
 ];
 
 // initialize buttons
@@ -94,13 +116,14 @@ button2.onclick = goCave;
 button3.onclick = fightDragon;
 
 function update(location) {
+  monsterStats.style.display = "none"; // so no text appears
   button1.innerText = location["button text"][0]; //property of the location (const) object passed into the function. Shows only first.
   button2.innerText = location["button text"][1];
   button3.innerText = location["button text"][2];
   button1.onclick = location["button functions"][0];
   button2.onclick = location["button functions"][1];
   button3.onclick = location["button functions"][2];
-  text.innerText = location.text;
+  text.innerHTML = location.text;
 }
 
 function goTown() {
@@ -191,6 +214,63 @@ function goFight() {
   monsterHealthText.innerText = monsterHealth;
 }
 
-function attack() {}
+function attack() {
+  text.innerText = "The " + monsters[fighting].name + " attacks."; // name of monster
+  text.innerText +=
+    " You attack it with your " + weapons[currentWeaponIndex].name + "."; // weapon
+  health -= getMonsterAttackValue(monsters[fighting].level); //health equal to health minus the return value of the getMonsterAttackValue function, and passes the level of the monster as an argument
+  monsterHealth -= //monsterHealth to monsterHealth minus the power of the player's current weapon
+    weapons[currentWeaponIndex].power + Math.floor(Math.random() * xp) + 1; // add a random number between 1 and the value of xp to your monsterHealth -= weapons[currentWeaponIndex].power
+  healthText.innerText = health; // update health status
+  monsterHealthText.innerText = monsterHealth; // update monster health status
+  if (health <= 0) {
+    //check if health is less than or equal to 0. If it is, call the lose function
+    lose();
+  } else if (monsterHealth <= 0) {
+    // check if monsterHealth is less than or equal to 0. If the player is fighting the dragon (fighting would be 2), call the winGame function. Move the defeatMonster() call to the else block.
+    if (fighting === 2) {
+      winGame();
+    } else {
+      defeatMonster();
+    }
+  }
+}
 
-function dodge() {}
+function getMonsterAttackValue(level) {
+  // The attack of the monster will be based on the monster's level and the player's xp
+  const hit = level * 5 - Math.floor(Math.random() * xp); // This will set the monster's attack to five times their level minus a random number between 0 and the player's xp
+  return hit > 0 ? hit : 0; // notice a bug. If your xp is high enough, the getMonsterAttackValue function will return a negative number, which will actually add to your total health when fighting a monster! Fix by using ternary operator is a conditional operator and can be used as a one-line if-else statement. The syntax is: condition ? expressionIfTrue : expressionIfFalse
+}
+
+function dodge() {
+  text.innerText = "You dodge the attack from the " + monsters[fighting].name;
+}
+
+function defeatMonster() {
+  gold += Math.floor(monsters[fighting].level * 6.7); //set gold equal to gold plus the monster's level times 6.7
+  xp += monsters[fighting].level;
+  goldText.innerText = goldText;
+  xpText.innerText = xpText;
+  update(locations[4]); //calling the update function with locations[4]
+}
+
+function lose() {
+  update(locations[5]);
+}
+
+function winGame() {
+  update(locations[6]);
+}
+
+function restart() {
+  xp = 0;
+  health = 100;
+  gold = 50;
+  currentWeaponIndex = 0;
+  inventory = ["stick"];
+  // update innerText properties
+  goldText.innerText = goldText;
+  healthText.innerText = healthText;
+  xpText.innerText = xpText;
+  goTown(); //call function
+}
